@@ -1,0 +1,139 @@
+//package com.company;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+// 0 - free
+// >0- not free
+class Main1 {
+    int min_d ;
+    int [][] bestp;
+    Main1(int n){
+    }
+    void initialInit(int [] s,int n){
+        init(s,0,n);
+        //System.out.println(n);
+        /*bestp[0][0] = n;
+        bestp[0][1] = n;
+        bestp[0][2] = n;
+
+        bestp[1][0] = s.length-n;
+        bestp[1][1] = n;
+        bestp[1][2] = s.length-n;
+
+        bestp[2][0] = s.length;
+        bestp[2][1] = s.length;
+        bestp[2][2] = s.length-n;*/
+        init(s,n,s.length-n);
+        init(s,0,s.length-n);
+    }
+    private static void init(int [] s,int x,int size){
+        for (int i=x;i<x+Math.abs(size);i++)
+            s[i]+=size;
+    }
+
+    private static boolean couldInit(int [] s,int x,int y,int size){
+        if (x+size>s.length || y+size>s.length) return false;
+        for (int i=x;i<x+size;i++)
+            if(s[i] > y) return false;
+        return true;
+    }
+
+    private  static int [] firstFree(int [] s,int x,int y){
+        if (x>=s.length) {
+            x = 0;y++;
+            if (y == s.length) return null;
+        }
+        while (true){
+            if (s[x] <= y) return new int[] {x,y};
+            x++;
+            if (x == s.length) {
+                x = 0;
+                y++;
+                if (y == s.length) return null;
+            }
+        }
+    }
+    private void copy(int [][] s,int d){
+        for (int i=0;i<d;i++)
+            for (int j=0;j<3;j++)
+                bestp[i][j] = s[i][j];
+    }
+
+
+    private void solve(int[] s, final int x, final int y,int d,int [][]p,int k){
+        for(int sz=k-1;sz>=1;sz--){
+            //if (d==1){init(s,0,k);}
+            if (d>=min_d) { return;}
+            //System.out.println(k);
+            // for(int sz=1;sz<k;sz++){
+            //  if (!couldInit(s, x, y, sz)) return;
+            if (!couldInit(s, x, y, sz)) continue;
+            if (d == 1) {k = sz+1;}//System.out.println(k);}
+
+            init(s,x,sz);
+            p[d-1][0] = x;
+            p[d-1][1] = y;
+            p[d-1][2] = sz-1;
+            int[] xy = firstFree(s, x+sz, y);
+            if (xy == null) {
+                // System.out.println(d);
+                //print(s,d);
+                if (d < min_d) {
+                    min_d = d;
+                    copy(p,d);
+                    //  System.out.println( Arrays.toString(s));
+                }
+
+                init(s,x,-sz);
+                return;
+            }
+            solve(s, xy[0], xy[1], d + 1,p,k);
+            init(s,x,-sz);
+        }
+    }
+
+    static void solve(int n){
+    //throw new RuntimeException()
+        Main1 m=new Main1(n);
+        int [][] p = new int [2*n][3];
+        m.bestp = new int [2*n][3];
+        m.min_d=2*n;
+        int [] mm = new int [n];
+        if (n==23 || n==17 ||n==19||n==29||n==31||n==37 || n==7) {
+            m.initialInit(mm, n/2+1);
+            m.solve(mm,n/2+1,mm.length-n/2-1,4,p,n);
+            m.bestp[0][0] = 0;
+            m.bestp[0][1] = 0;
+            m.bestp[0][2] = n/2;
+
+            m.bestp[1][0] = n/2+1;
+            m.bestp[1][1] = 0;
+            m.bestp[1][2] = n/2-1;
+
+            m.bestp[2][0] = 0;
+            m.bestp[2][1] = n/2+1;
+            m.bestp[2][2] = n/2-1;
+        }
+        else
+        m.solve(mm,0,0,1,p,n);
+        StringBuilder s= new StringBuilder("" + m.min_d+"\n");
+        for (int i=0;i<m.min_d;i++) {
+            for (int j = 0; j < 3; j++)
+                s.append(m.bestp[i][j]+1).append(" ");
+            s.append("\n");
+        }
+        System.out.println(s);
+
+        //m.initialInit(mm,4);
+       // System.out.println(Arrays.toString(mm));
+    }
+
+}
+
+class Main{
+    public static void main(String[] args) {
+        int n =new Scanner(System.in).nextInt();
+        Main1.solve(n);
+    }
+}
