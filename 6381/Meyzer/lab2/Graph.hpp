@@ -1,61 +1,60 @@
 #pragma once
+#include <iostream>
 #include <array>
 #include <list>
+//#include "Vertex.hpp"
 
 namespace DM
 {
-class Pair
+class Triplet
 {
 public:
-     char name;
-     int weight;
+	Triplet();
+	Triplet(char name, double weight)
+		: name(name), weight(weight)
+	{ }
+     char name = 0;
+     double weight = 0;
+	// Deprecated?
+	// bool isVis = false;
 };
 
 class Vertex
 {
 public:
-     Vertex() : id(0) { }
-     Vertex(char a) : id(a) { }
-     // void setId(char a);
-     // void addEdge(char b);
-     // void sortEdges();
-     char getId() const;
+     Vertex() : name(0) { }
+     char getName() const;
+	void addEdge(char a, double weight);
+	// Sort incident edges of this vertex
+	void sortEdgesByName();
+	void sortEdgesByWeight();
+	bool hasEdges();
+	void printEdges();
 protected:
-     // Identifier(name) of a vertex
-
      // Associated vertices
-     // List should keep pair name-weight
-     std::list<Pair> assocVertices;
-private:
-     char id;
-
+     // List keeps class with name, weight and bool isVis
+     std::list<Triplet> assocVertices;
+     // Identifier(name) of a vertex
+	char name;
 };
-
-// class Edge
-// {
-// public:
-//      Edge() : v1(nullptr), v2(nullptr), weight(0) { }
-//      // Edge(char a, char b, int w);
-//      Edge(Vertex *a, Vertex *b, int w);
-// private:
-//      Vertex *v1, *v2;
-//      int weight;
-// };
 
 class Graph
 {
 public:
-     Graph();
+     Graph() = default;
+	void read();
+	void readOr();
      void addEdge(char a, char b, double weight);
      // Sort incident edges of each vertex
-     void sortEdges();
-     // Find path and print it to the std::cout
-     void pathSearchGreedy(char a, char b);
-     void pathSearch(char a, char b);
+     void sortEdgesByName();
+	void sortEdgesByWeight();
+	void print();
+     // Find path from a to b and return it in std::list
+     void pathSearchGreedy(char s, char e, std::list<char>& Result);
+     void pathSearch(char s, char e, std::list<char>& Result);
 private:
      // Vertices named a-z.
      std::array<Vertex, 26> vertices;
-     int vertN;
-     int edgN;
+     int vertN = 26;
 };
 } // namespace DM
