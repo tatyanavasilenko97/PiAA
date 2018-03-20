@@ -9,7 +9,7 @@ int main()
 	char s = 0, e = 0;
 	cin >> s >> e;
 	// cout << s << " " << e << endl;
-	g.read();
+	g.readOr();
 	// g.print();
 	std::cout << std::endl;
 	std::list<char> Result;

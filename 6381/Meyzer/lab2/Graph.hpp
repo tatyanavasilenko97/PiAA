@@ -2,21 +2,20 @@
 #include <iostream>
 #include <array>
 #include <list>
+#include <queue>
 //#include "Vertex.hpp"
 
 namespace DM
 {
-class Triplet
+class Dyad
 {
 public:
-	Triplet();
-	Triplet(char name, double weight)
+	Dyad();
+	Dyad(char name, double weight)
 		: name(name), weight(weight)
 	{ }
      char name = 0;
      double weight = 0;
-	// Deprecated?
-	bool isVis = false;
 };
 
 class Vertex
@@ -26,8 +25,8 @@ public:
      char getName() const;
 	void addEdge(char a, double weight);
 	// void getUnvis();
-	std::list<DM::Triplet>::iterator getAssocBegin();
-	std::list<DM::Triplet>::iterator getAssocEnd();
+	std::list<DM::Dyad>::iterator getAssocBegin();
+	std::list<DM::Dyad>::iterator getAssocEnd();
 	// Sort incident edges of this vertex
 	void sortEdgesByName();
 	void sortEdgesByWeight();
@@ -36,7 +35,7 @@ public:
 protected:
      // Associated vertices
      // List keeps class with name, weight and bool isVis
-     std::list<Triplet> assocVertices;
+     std::list<Dyad> assocVertices;
      // Identifier(name) of a vertex
 	char name;
 };

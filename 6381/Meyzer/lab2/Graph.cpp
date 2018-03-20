@@ -1,4 +1,5 @@
 #include "Graph.hpp"
+#include <limits>
 
 char DM::Vertex::getName() const
 {
@@ -7,26 +8,26 @@ char DM::Vertex::getName() const
 
 void DM::Vertex::addEdge(char a, double weight)
 {
-	assocVertices.push_back(DM::Triplet(a, weight));
+	assocVertices.push_back(DM::Dyad(a, weight));
 }
 
-std::list<DM::Triplet>::iterator DM::Vertex::getAssocBegin()
+std::list<DM::Dyad>::iterator DM::Vertex::getAssocBegin()
 {
 	return assocVertices.begin();
 }
-std::list<DM::Triplet>::iterator DM::Vertex::getAssocEnd()
+std::list<DM::Dyad>::iterator DM::Vertex::getAssocEnd()
 {
 	return assocVertices.end();
 }
 
 void DM::Vertex::sortEdgesByName()
 {
-	assocVertices.sort([](const Triplet &a, const Triplet &b) { return (a.name < b.name); });
+	assocVertices.sort([](const Dyad &a, const Dyad &b) { return (a.name < b.name); });
 }
 
 void DM::Vertex::sortEdgesByWeight()
 {
-	assocVertices.sort([](const Triplet &a, const Triplet &b) { return (a.weight < b.weight); });
+	assocVertices.sort([](const Dyad &a, const Dyad &b) { return (a.weight < b.weight); });
 }
 
 bool DM::Vertex::hasEdges()
@@ -110,39 +111,39 @@ void DM::Graph::print()
 
 void DM::Graph::pathSearchGreedy(char s, char e, std::list<char>& Result)
 {
-	std::array<bool, 26> isVisited;
-	isVisited.fill(false);
+	std::queue<char> q;
+	std::array<char, 26> path;
+	std::array<double, 26> dist;
+	dist.fill(std::numeric_limits<double>::max());
 	sortEdgesByWeight();
-	char curr = s;
-	isVisited.at(curr-'a') = true;
-	Result.push_back(curr);
-	while (curr != e)
+	q.push(s);
+	dist.at(s-'a') = 0;
+
+	while (!q.empty())
 	{
-		// std::cout << curr << " ";
-		auto v = getVertex(curr).getAssocBegin(),
-			end = getVertex(curr).getAssocEnd();
-		for(; v != end; ++v) // Для всех смежных вершин
+		char curr = q.front();
+		std::cout << curr << dist.at(curr-'a') << std::endl;
+		q.pop();
+		for (auto i = getVertex(curr).getAssocBegin(),
+			end = getVertex(curr).getAssocEnd(); i != end; ++i)
 		{
-			if (!isVisited.at((*v).name-'a')) // Если вершина еще не посещена
+			if (dist.at((*i).name-'a') > (dist.at(curr-'a') + (*i).weight))
 			{
-				isVisited.at((*v).name-'a') = true;
-				// std::cout << "Added " << (*v).name << " to result" << std::endl;
-				Result.push_back((*v).name); // Помещаем ее в конец Result
-				curr = (*v).name;
-				break;
+				path.at((*i).name-'a') = curr;
+				dist.at((*i).name-'a') = dist.at(curr-'a') + (*i).weight;
+				q.push((*i).name);
 			}
-		}
-		// Если все связанные вершины посещены
-			// curr = последний элемент из Result
-			// Удаляем последний элемент из Result
-		if (v == end)
-		{
-				// curr = Result.back();
-				// std::cout << "Removed " << curr << " from result" << std::endl;
-			Result.pop_back();
-			curr = Result.back();
+			std::cout << (*i).name << " vertex done " << dist.at((*i).name-'a') << std::endl;
 		}
 	}
+	std::cout << std::endl;
+	char curr = e;
+	while (curr != s)
+	{
+		Result.push_front(curr);
+		curr = path.at(curr-'a');
+	}
+	Result.push_front(curr);
 }
 
 void DM::Graph::pathSearch(char s, char e, std::list<char>& Result)
