@@ -16,7 +16,7 @@ public:
      char name = 0;
      double weight = 0;
 	// Deprecated?
-	// bool isVis = false;
+	bool isVis = false;
 };
 
 class Vertex
@@ -25,6 +25,9 @@ public:
      Vertex() : name(0) { }
      char getName() const;
 	void addEdge(char a, double weight);
+	// void getUnvis();
+	std::list<DM::Triplet>::iterator getAssocBegin();
+	std::list<DM::Triplet>::iterator getAssocEnd();
 	// Sort incident edges of this vertex
 	void sortEdgesByName();
 	void sortEdgesByWeight();
@@ -43,13 +46,16 @@ class Graph
 public:
      Graph() = default;
 	void read();
+	// Read Graph as oriented
 	void readOr();
      void addEdge(char a, char b, double weight);
+	DM::Vertex& getVertex(char a);
      // Sort incident edges of each vertex
      void sortEdgesByName();
 	void sortEdgesByWeight();
+	// Print all the Graph
 	void print();
-     // Find path from a to b and return it in std::list
+     // Find path from a to b and return it in Result
      void pathSearchGreedy(char s, char e, std::list<char>& Result);
      void pathSearch(char s, char e, std::list<char>& Result);
 private:
