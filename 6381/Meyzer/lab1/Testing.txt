@@ -1,0 +1,157 @@
+For N = 2:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 3:
+Answer of optimized algorithm is: 6
+Answer of basic algorithm without optimizations trying to find lower number: 6
+Time needed for basic algorithm: 0
+For N = 4:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 5:
+Answer of optimized algorithm is: 8
+Answer of basic algorithm without optimizations trying to find lower number: 8
+Time needed for basic algorithm: 0
+For N = 6:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 7:
+Answer of optimized algorithm is: 9
+Answer of basic algorithm without optimizations trying to find lower number: 9
+Time needed for basic algorithm: 0
+For N = 8:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 9:
+Answer of optimized algorithm is: 6
+Answer of basic algorithm without optimizations trying to find lower number: 6
+Time needed for basic algorithm: 0
+For N = 10:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 11:
+Answer of optimized algorithm is: 11
+Answer of basic algorithm without optimizations trying to find lower number: 11
+Time needed for basic algorithm: 0
+For N = 12:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 13:
+Answer of optimized algorithm is: 11
+Answer of basic algorithm without optimizations trying to find lower number: 11
+Time needed for basic algorithm: 0
+For N = 14:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 15:
+Answer of optimized algorithm is: 6
+Answer of basic algorithm without optimizations trying to find lower number: 6
+Time needed for basic algorithm: 0
+For N = 16:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 17:
+Answer of optimized algorithm is: 12
+Answer of basic algorithm without optimizations trying to find lower number: 12
+Time needed for basic algorithm: 0
+For N = 18:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 19:
+Answer of optimized algorithm is: 13
+Answer of basic algorithm without optimizations trying to find lower number: 13
+Time needed for basic algorithm: 0
+For N = 20:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 21:
+Answer of optimized algorithm is: 6
+Answer of basic algorithm without optimizations trying to find lower number: 6
+Time needed for basic algorithm: 0
+For N = 22:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 23:
+Answer of optimized algorithm is: 13
+Answer of basic algorithm without optimizations trying to find lower number: 13
+Time needed for basic algorithm: 2
+For N = 24:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 25:
+Answer of optimized algorithm is: 8
+Answer of basic algorithm without optimizations trying to find lower number: 8
+Time needed for basic algorithm: 0
+For N = 26:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 27:
+Answer of optimized algorithm is: 6
+Answer of basic algorithm without optimizations trying to find lower number: 6
+Time needed for basic algorithm: 0
+For N = 28:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 29:
+Answer of optimized algorithm is: 14
+Answer of basic algorithm without optimizations trying to find lower number: 14
+Time needed for basic algorithm: 26
+For N = 30:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 31:
+Answer of optimized algorithm is: 15
+Answer of basic algorithm without optimizations trying to find lower number: 15
+Time needed for basic algorithm: 89
+For N = 32:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 33:
+Answer of optimized algorithm is: 6
+Answer of basic algorithm without optimizations trying to find lower number: 6
+Time needed for basic algorithm: 0
+For N = 34:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 35:
+Answer of optimized algorithm is: 8
+Answer of basic algorithm without optimizations trying to find lower number: 8
+Time needed for basic algorithm: 5
+For N = 36:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 37:
+Answer of optimized algorithm is: 15
+Answer of basic algorithm without optimizations trying to find lower number: 15
+Time needed for basic algorithm: 1014
+For N = 38:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+For N = 39:
+Answer of optimized algorithm is: 6
+Answer of basic algorithm without optimizations trying to find lower number: 6
+Time needed for basic algorithm: 1
+For N = 40:
+Answer of optimized algorithm is: 4
+Answer of basic algorithm without optimizations trying to find lower number: 4
+Time needed for basic algorithm: 0
+Optimized algorithm passed tests.
