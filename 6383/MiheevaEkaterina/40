@@ -1,0 +1,101 @@
+//package com.company;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+class Main{
+    public static void main(String[] args) {
+        int n=new Scanner(System.in).nextInt();
+        long time=System.currentTimeMillis();
+        Solve.squares(n);
+//System.out.println("time= "+(System.currentTimeMillis()-time));
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        for(int n=2;n<40;n++){
+            System.out.println("n="+n);
+            Solve.squares(n);
+            System.out.println();
+        }
+    }
+
+    static void print(int[][] arr){
+        StringBuilder s= new StringBuilder();
+        s.append(arr.length).append("\n");
+        for(int[] i:arr) s.append((i[1]+1)).append(" ").append((i[2]+1)).append(" ").append(i[0]).append("\n");
+        System.out.println(s);
+    }
+}
+
+class Solve {
+    private final int[] m;
+    private final int[][] p;
+    private final int size;
+    private final int min_d;
+    private Solve(int size, int min_d){
+        this.size=size;
+        this.min_d =min_d;
+        p =new int[min_d][3];
+        m =new int[size];
+    }
+    static boolean prime(int n){
+        if (n!=7 && n!=11 && n!=17 && n!=19 && n!=23 &&n!=29 &&n!=31 &&n!=37)return false;
+        return true;
+    }
+    static void squares(int n){
+        for(int i=4;true;i++) {
+            Solve solve=new Solve(n,i);
+            if(prime(n)){
+                Arrays.fill(solve.m,0,n/2,n);
+                solve.m[n/2]=n/2+1;
+                Arrays.fill(solve.m,n/2+1,n,n/2);
+                solve.p[0]=new int[]{n/2+1,0,0};
+                solve.p[1]=new int[]{n/2,n/2+1,0};
+                solve.p[2]=new int[]{n/2,0,n/2+1};
+                if (solve.solve(n/2+1, n/2, 3)) {
+                    Test.print(solve.p);
+                    return;
+                }
+            }
+            else {
+                if (solve.solve(0, 0, 0)) {
+                    Test.print(solve.p);
+                    return;
+                }
+            }
+        }
+    }
+    private boolean solve(final int x, final int y, int d){
+        if(d== min_d)return false;
+        for (int i=1;i<size;i++){
+            if(x+i>size)return false;
+            if(y+i>size)return false;
+            for(int ix=x;ix<x+i;ix++)if(m[ix]>y)return false;
+
+            p[d][0]=i;
+            p[d][1]=x;
+            p[d][2]=y;
+            for(int j=x;j<x+i;j++) m[j]+=i;
+
+            int xx=x+i;
+            int yy=y;
+            while (true){
+                if(xx==size){
+                    xx=0;
+                    yy++;
+                    if(yy==size)return true;
+                }
+                if(m[xx]<=yy)break;
+                xx++;
+            }
+
+            if(solve(xx,yy,d+1))return true;
+
+            for(int j=x;j<x+i;j++) m[j]-=i;
+        }
+        return false;
+    }
+}
+
