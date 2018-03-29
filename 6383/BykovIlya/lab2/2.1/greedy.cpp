@@ -12,8 +12,8 @@ void greedy(std::vector < std::vector < std::pair < int, double > > > al, int st
     std::vector < int > prev(sz, 0);
     std::vector < double > dist(sz, MAX);
     std::set < std::pair < double, int > > queue;
-    dist[start] = 0;
-    queue.insert(std::pair < double, int > (dist[start], start));
+    dist[end] = 0;
+    queue.insert(std::pair < double, int > (dist[end], end));
     while (!queue.empty())
     {
        int minIndex = queue.begin()->second;
@@ -27,16 +27,18 @@ void greedy(std::vector < std::vector < std::pair < int, double > > > al, int st
                 queue.insert(std::pair < double, int > (dist[al[minIndex][j].first], al[minIndex][j].first));
             }   
     }
-    for (int i = end; i != start; i = prev[i])
+    for (int i = start; i != end; i = prev[i])
         buf.push_back(i);
-    buf.push_back(start);
+    buf.push_back(end);
     std::reverse(buf.begin(), buf.end());
     int i = buf.size() - 1;
-    while(buf[i] == 0)
+   	while(buf[i--] == 0)
     {
         buf.pop_back();
-        i--;
     }
+	if (buf[buf.size() - 1] != start)
+		buf.push_back(start);
+	std::reverse(buf.begin(), buf.end());
     return;
 }
 
@@ -54,7 +56,7 @@ int main()
         std::cin >> u >> v >> len;
         charToInt.insert(std::pair < char, int > (u, charToInt.size()));
         charToInt.insert(std::pair < char, int > (v, charToInt.size()));
-        way.insert( {std::pair < int, int > ( charToInt.find(u)->second, charToInt.find(v)->second ) , len });
+        way.insert( {std::pair < int, int > (charToInt.find(v)->second, charToInt.find(u)->second) , len });
     }
     adjacencyList.resize(charToInt.size());
     for (size_t i = 0; i < charToInt.size(); i++)
@@ -63,7 +65,7 @@ int main()
     for (size_t i = 0; i < charToInt.size(); i++)
         for (size_t j = 0; j < charToInt.size(); j++)
                     adjacencyList[i][j] = std::make_pair(j, ((way.find({i, j}) != way.end()) ? way.find({i, j})->second : MAX));
-    std::cout << "Coding by tops:\n";
+    /*std::cout << "Coding by tops:\n";
     for (auto i = charToInt.begin(); i != charToInt.end(); ++i)
     {
         std::cout << i->first << " -> " << i->second << std::endl;
@@ -81,8 +83,8 @@ int main()
             std::cout << adjacencyList[i][j].first << "--"
                     << ((adjacencyList[i][j].second == MAX) ? 99 :  adjacencyList[i][j].second ) << " ";
         std::cout << std::endl;
-    }
-    std::cout << std::endl;
+    }*/
+   // std::cout << std::endl;
     std::vector <int> intRes(charToInt.size());
     greedy(adjacencyList, charToInt.find(start)->second,
             charToInt.find(end)->second, charToInt.size(), intRes);
@@ -91,8 +93,8 @@ int main()
     	for (auto it = charToInt.begin(); it != charToInt.end(); ++it)         
     		if (it->second == intRes[i]) 
         		answer += it->first;
-    std::cout << std::endl;
-    std::cout << "Greedy way: "<< answer << std::endl;
+  //  std::cout << std::endl;
+    std::cout <</* "Greedy way: "<< */answer << std::endl;
     return 0;
 }
 
