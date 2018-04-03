@@ -183,7 +183,7 @@ int main() {
 	best = new Table(SizeOfSquare);
 
 	int call = BackTrack(table, Point(0,0));
-	std::cout << "Calls: " <<call << std::endl;
+	// std::cout << "Calls: " <<call << std::endl;
 	std::cout << *best << std::endl;
 
 	delete best;
