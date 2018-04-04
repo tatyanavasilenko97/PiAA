@@ -38,32 +38,6 @@ void Board::printBestBrd(){
 	}
 }
 
-int Board::findSq(int& x, int& y, int num){
-    while (bestBoard[y][x] != num){
-        if (x == boardSize - 1){
-            x = 0;
-            ++y;
-        }
-        else 
-			++x;
-        if (x >= boardSize || y >= boardSize)
-            return 0;
-    }
-    int i = 0;
-    while (bestBoard[y][x+i] == num){
-        if ((x+i)<boardSize)
-            ++i;
-        else
-			return --i;
-    }
-    return i;
-}
-	
-void Board::changeBestBoard(){
-	smallestAmountSq = currAmountSq - 1;
-	bestBoard = busyCells;
-}
-
 bool Board::findFreeCell(int &x, int &y){
 	while (busyCells[y][x]){
         if (x == boardSize - 1){
@@ -102,6 +76,11 @@ void Board::deleteSq(int x, int y){
         for (int j = x; j < boardSize && busyCells[i][j] == currAmountSq; j++)
             busyCells[i][j] = 0;
 }
+	
+void Board::changeBestBoard(){
+	smallestAmountSq = currAmountSq - 1;
+	bestBoard = busyCells;
+}
 
 void squaring(Board *board, int x = 0, int y = 0){
     if (board->currAmountSq > board->smallestAmountSq)
@@ -131,23 +110,23 @@ void modSquaring(Board *board){
     }
     else if (size % 3 == 0){
         cout << 6 << endl;
-        cout << 1        << " " << 1        << " " << 6*size << endl;
-        cout << 6*size+1 << " " << 1        << " " << 3*size << endl;
-        cout << 6*size+1 << " " << 3*size+1 << " " << 3*size << endl;
-        cout << 6*size+1 << " " << 6*size+1 << " " << 3*size << endl;
-        cout << 3*size+1 << " " << 6*size+1 << " " << 3*size << endl;
-        cout << 1        << " " << 6*size+1 << " " << 3*size << endl;
+        cout << 1          << " " << 1          << " " << 2*size/3 << endl;
+        cout << 2*size/3+1 << " " << 1          << " " << size/3   << endl;
+        cout << 2*size/3+1 << " " << size/3+1   << " " << size/3   << endl;
+        cout << 2*size/3+1 << " " << 2*size/3+1 << " " << size/3   << endl;
+        cout << size/3+1   << " " << 2*size/3+1 << " " << size/3   << endl;
+        cout << 1          << " " << 2*size/3+1 << " " << size/3   << endl;
     }
     else if (size % 5 == 0){
         cout << 8 << endl;
-        cout << 1         << " " << 1         << " " << 15*size << endl;
-        cout << 15*size+1 << " " << 1         << " " << 10*size << endl;
-        cout << 15*size+1 << " " << 10*size+1 << " " << 10*size << endl;
-        cout << 1         << " " << 15*size+1 << " " << 10*size << endl;
-        cout << 10*size+1 << " " << 15*size+1 << " " << 5*size  << endl;
-        cout << 10*size+1 << " " << 20*size+1 << " " << 5*size  << endl;
-        cout << 15*size+1 << " " << 20*size+1 << " " << 5*size  << endl;
-        cout << 20*size+1 << " " << 20*size+1 << " " << 5*size  << endl;
+        cout << 1          << " " << 1          << " " << 3*size/5 << endl;
+        cout << 3*size/5+1 << " " << 1          << " " << 2*size/5 << endl;
+        cout << 3*size/5+1 << " " << 2*size/5+1 << " " << 2*size/5 << endl;
+        cout << 1          << " " << 3*size/5+1 << " " << 2*size/5 << endl;
+        cout << 2*size/5+1 << " " << 3*size/5+1 << " " << size/5   << endl;
+        cout << 2*size/5+1 << " " << 4*size/5+1 << " " << size/5   << endl;
+        cout << 3*size/5+1 << " " << 4*size/5+1 << " " << size/5   << endl;
+        cout << 4*size/5+1 << " " << 4*size/5+1 << " " << size/5   << endl;
     }
     else{
 		++board->currAmountSq;
@@ -170,6 +149,27 @@ void printList(Board *board){
         size = board->findSq(x, y, i);
         cout << x+1 << " " << y+1 << " " << size << endl;
     }
+}
+
+int Board::findSq(int& x, int& y, int num){
+    while (bestBoard[y][x] != num){
+        if (x == boardSize - 1){
+            x = 0;
+            ++y;
+        }
+        else 
+			++x;
+        if (x >= boardSize || y >= boardSize)
+            return 0;
+    }
+    int i = 0;
+    while (bestBoard[y][x+i] == num){
+        if ((x+i)<boardSize)
+            ++i;
+        else
+			return --i;
+    }
+    return i;
 }
 
 int main(){
