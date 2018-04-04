@@ -1,0 +1,27 @@
+﻿Dr. Memory version 1.11.0 build 2 built on Aug 29 2016 02:42:07
+Dr. Memory results for pid 4124: "BackTrack.exe"
+Application cmdline: "C:\Users\андрей\Desktop\лабы\ПиАА\PiAA\6381\Fialkovsky\Lab1\BackTrack.exe"
+Recorded 115 suppression(s) from default C:\Program Files (x86)\Dr. Memory\bin\suppress-default.txt
+
+===========================================================================
+FINAL SUMMARY:
+
+DUPLICATE ERROR COUNTS:
+
+SUPPRESSIONS USED:
+
+NO ERRORS FOUND:
+      0 unique,     0 total unaddressable access(es)
+      0 unique,     0 total uninitialized access(es)
+      0 unique,     0 total invalid heap argument(s)
+      0 unique,     0 total GDI usage error(s)
+      0 unique,     0 total handle leak(s)
+      0 unique,     0 total warning(s)
+      0 unique,     0 total,      0 byte(s) of leak(s)
+      0 unique,     0 total,      0 byte(s) of possible leak(s)
+ERRORS IGNORED:
+      4 potential error(s) (suspected false positives)
+         (details: C:\Users\андрей\AppData\Roaming\Dr. Memory\DrMemory-BackTrack.exe.4124.000\potential_errors.txt)
+      6 unique,     6 total,    384 byte(s) of still-reachable allocation(s)
+         (re-run with "-show_reachable" for details)
+Details: C:\Users\андрей\AppData\Roaming\Dr. Memory\DrMemory-BackTrack.exe.4124.000\results.txt
