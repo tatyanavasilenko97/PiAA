@@ -11,10 +11,7 @@
 
 #define MAX     100000
 
-char end;
-std::map < char, int > newCode;
-
-int heuristic_function(const int & a)
+int heuristic_function(const int & a, const int & end, const std::map < char, int > newCode)
 {
     char a_;
     for (auto it = newCode.begin(); it != newCode.end(); ++it)
@@ -25,12 +22,20 @@ int heuristic_function(const int & a)
 					a_ = it->first;
 				}
 			}
+    char end_;
+    for (auto it = newCode.begin(); it != newCode.end(); ++it)
+			{
 
-	return abs((int)(end) - (int)(a_));
+				if (it->second == end)
+				{
+					end_ = it->first;
+				}
+			}
+	return abs((int)(end_) - (int)(a_));
 }
 
-bool a_star(std::vector < std::vector < std::pair < int, double > > > al, int start,
-	int end_, int sz, std::vector < int > & buf)
+void a_star(const std::vector < std::vector < std::pair < int, double > > > al,const int & start,
+	const int & end_, const int & sz, std::vector < int > & buf, const std::map < char, int > newCode)
 {
 	std::vector < int > prev(sz);
     std::vector < int > f(sz);
@@ -49,7 +54,7 @@ bool a_star(std::vector < std::vector < std::pair < int, double > > > al, int st
 			{
 				queue.erase(std::pair < double, int >(dist[al[minIndex][j].first], al[minIndex][j].first));
 				dist[al[minIndex][j].first] = dist[minIndex]  + al[minIndex][j].second;
-				f[al[minIndex][j].first] = dist[al[minIndex][j].first] + heuristic_function(j);
+				f[al[minIndex][j].first] = dist[al[minIndex][j].first] + heuristic_function(j,end_, newCode);
 				prev[al[minIndex][j].first] = minIndex;
 				queue.insert(std::pair < double, int >(f[al[minIndex][j].first], al[minIndex][j].first));
 			}
@@ -67,15 +72,16 @@ bool a_star(std::vector < std::vector < std::pair < int, double > > > al, int st
 		buf.pop_back();
 		i--;
 	}
-	return true;
 }
 
 int main()
 {
 	char start;
+    char end;
 	std::ifstream cin ("in.txt");
 	std::cin >> start >> end;
 	std::map< char, int > charToInt;
+    std::map < char, int > newCode;
 	std::map < std::pair < char, char >, double > way_buf;
 	std::map < std::pair < int, int >, double > way;
 	std::vector< std::vector< std::pair < int, double > > > adjacencyList;
@@ -105,9 +111,8 @@ int main()
 		for (size_t j = 0; j < newCode.size(); j++)
 			adjacencyList[i][j] = std::make_pair(j, ((way.find({ i, j }) != way.end()) ? way.find({ i, j })->second : MAX));
 	std::vector <int> intRes(newCode.size());
-	if (a_star(adjacencyList, newCode.find(start)->second,
-		newCode.find(end)->second, newCode.size(), intRes))
-	{
+    a_star(adjacencyList, newCode.find(start)->second,
+		newCode.find(end)->second, newCode.size(), intRes, newCode);
 		std::string answer;
 		for (size_t i = 0; i < intRes.size(); i++)
 			for (auto it = newCode.begin(); it != newCode.end(); ++it)
@@ -119,11 +124,5 @@ int main()
 				}
 			}
 		std::cout << answer << std::endl;
-	}
-	else
-	{
-		std::cout << std::endl;
-		std::cout << "No way:(" << std::endl;
-	}
 	return 0;
 }
