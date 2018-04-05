@@ -21,10 +21,10 @@ void read(istream& cin){
         cin.get();
         double cost;
         cin>>cost;
-        if(cin.eof())return;
-        cin.get();
         m[v1][v2] = cost;
         m[v2][v1] = cost;
+        if(cin.eof())return;
+        cin.get();
     }
 }
 
@@ -39,7 +39,7 @@ void print(int finish_v){
 }
 
 int main() {
-    ifstream ifs("../input6.txt");if(!ifs)exit(123);
+    //ifstream ifs("../input6.txt");if(!ifs)exit(123);
 
     //cin>>start;
     //cin>>finish;
@@ -53,12 +53,14 @@ int main() {
         for (int j = 0;j<SIZE;j++) {
             m[i][j] = 0;
         }
+    //abgenmjl
+
     //
     //matrix input
     //
 
 
-    read(ifs);
+    read(cin);
     for (int i = 0;i<SIZE;i++){
         lable[i] = MAX;
         isVisited[i] = false;
@@ -83,6 +85,8 @@ int main() {
         isVisited[minIndex]= true;
     } while (minIndex != SIZE);
     print(finish);
+    //abgenmjl
+
     //cout<<lable[(int)finish - (int)'a'];
     //cout<<lable[finish];
 
