@@ -11,7 +11,7 @@ void pf (string &s,vector <int>&pi) {
     }
 }
 
-int check(string &p, string &t){
+int check(string p, string &t){
    string str=t+'\n'+p+p;
    std::string().swap(p);
    vector <int>pi(str.length());
