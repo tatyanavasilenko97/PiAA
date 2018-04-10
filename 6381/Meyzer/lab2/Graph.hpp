@@ -56,7 +56,7 @@ public:
 	void print();
      // Find path from a to b and return it in Result
      void pathSearchGreedy(char s, char e, std::list<char>& Result);
-     void pathSearch(char s, char e, std::list<char>& Result);
+     void pathSearchAStar(char s, char e, std::list<char>& Result);
 private:
      // Vertices named a-z.
      std::array<Vertex, 26> vertices;

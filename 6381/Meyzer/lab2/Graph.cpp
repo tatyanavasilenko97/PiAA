@@ -111,33 +111,44 @@ void DM::Graph::print()
 
 void DM::Graph::pathSearchGreedy(char s, char e, std::list<char>& Result)
 {
+	Result.clear();
 	std::queue<char> q;
 	std::array<char, 26> path;
 	std::array<double, 26> dist;
+	std::array<bool, 26> vis;
 	dist.fill(std::numeric_limits<double>::max());
+	vis.fill(false);
+	sortEdgesByName();
 	sortEdgesByWeight();
-	q.push(s);
 	dist.at(s-'a') = 0;
-
-	while (!q.empty())
+    	char curr = s;
+		// std::cout << curr << e << std::endl;
+	while (curr != e)
 	{
-		char curr = q.front();
-		std::cout << curr << dist.at(curr-'a') << std::endl;
-		q.pop();
+		// std::cout << curr << std::endl;
+		vis.at(curr-'a') = true;
+		Dyad next{0,0};
 		for (auto i = getVertex(curr).getAssocBegin(),
 			end = getVertex(curr).getAssocEnd(); i != end; ++i)
 		{
-			if (dist.at((*i).name-'a') > (dist.at(curr-'a') + (*i).weight))
-			{
-				path.at((*i).name-'a') = curr;
-				dist.at((*i).name-'a') = dist.at(curr-'a') + (*i).weight;
-				q.push((*i).name);
-			}
-			std::cout << (*i).name << " vertex done " << dist.at((*i).name-'a') << std::endl;
+			next = *i;
+			if (!vis.at((*i).name-'a')) break;
 		}
+		// Если все вершины, смежные с данной, уже были посещены, или их нет:
+		if (next.name==0 || vis.at(next.name-'a'))
+		{
+			curr = path.at(curr - 'a');
+			continue;
+		}
+        	path.at(next.name-'a') = curr;
+        	dist.at(next.name-'a') = dist.at(curr-'a') + next.weight;
+        	curr = next.name;
+		// std::cout << curr << dist.at(curr-'a') << std::endl; //
+
+		// std::cout << (*i).name << " vertex done " << dist.at((*i).name-'a') << std::endl; //
 	}
-	std::cout << std::endl;
-	char curr = e;
+	// std::cout << curr << std::endl; //
+	curr = e;
 	while (curr != s)
 	{
 		Result.push_front(curr);
@@ -146,7 +157,50 @@ void DM::Graph::pathSearchGreedy(char s, char e, std::list<char>& Result)
 	Result.push_front(curr);
 }
 
-void DM::Graph::pathSearch(char s, char e, std::list<char>& Result)
+void DM::Graph::pathSearchAStar(char s, char e, std::list<char>& Result)
 {
+	Result.clear();
+	struct n_pr{ // Name-priority struct
+	    char name;
+	    double priority;
+	    bool operator<(const n_pr& b) const
+	    {
+		    return priority > b.priority;
+	    }
+	};
+	std::priority_queue<n_pr> q;
+	std::array<char, 26> path;
+	std::array<double, 26> dist;
+	dist.fill(std::numeric_limits<double>::max());
+	// sortEdgesByName();
+	// sortEdgesByWeight();
+	q.push({s, 0});
+	dist.at(s-'a') = 0;
 
+	while (!q.empty())
+	{
+	 char curr = q.top().name;
+	 // std::cout << curr << dist.at(curr-'a') << std::endl; //
+	 q.pop();
+	 for (auto i = getVertex(curr).getAssocBegin(),
+		 end = getVertex(curr).getAssocEnd(); i != end; ++i)
+	 {
+		 if (dist.at((*i).name-'a') > (dist.at(curr-'a') + (*i).weight))
+		 {
+			 path.at((*i).name-'a') = curr;
+			 dist.at((*i).name-'a') = dist.at(curr-'a') + (*i).weight;
+			 q.push({(*i).name, dist.at((*i).name-'a') + abs((*i).name-e)}); // prior = path + euristic
+			 // std::cout << "Added ";
+		 }
+		 // std::cout << (*i).name << " vertex done " << dist.at((*i).name-'a') << std::endl; //
+	 }
+	}
+	// std::cout << std::endl; //
+	char curr = e;
+	while (curr != s)
+	{
+	 Result.push_front(curr);
+	 curr = path.at(curr-'a');
+	}
+	Result.push_front(curr);
 }
