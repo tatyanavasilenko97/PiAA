@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <set>
 
 using namespace std;
 
@@ -10,25 +11,29 @@ struct Node{
     Node* failNode= nullptr;
     Node* nearPattern= nullptr;
     int patternMatched=-1;
+    static void deleteBor(Node* root){
+        for(auto ch:root->v)deleteBor(ch.second);
+        delete root;
+    }
 };
+
+void addToBor(Node* bor,string& key, int indexOfPattern){
+    for(char c:key){
+        if(bor->v.find(c)!=bor->v.end()){
+            bor=bor->v.find(c)->second;
+        }
+        else{
+            Node* newNode=new Node();
+            bor->v.insert(pair<char,Node*>(c,newNode));
+            bor=newNode;
+        }
+    }
+    bor->patternMatched=indexOfPattern;
+}
 
 Node* createBor(vector<string>& strs){
     Node* root=new Node();
-    for(int i=0;i<strs.size();i++){
-        string& str=strs[i];
-        Node* current=root;
-        for(char c:str){
-            if(current->v.find(c)!=current->v.end()){
-                current=current->v.find(c)->second;
-            }
-            else{
-                Node* newNode=new Node();
-                current->v.insert(pair<char,Node*>(c,newNode));
-                current=newNode;
-            }
-        }
-        current->patternMatched=i;
-    }
+    for(int i=0;i<strs.size();i++)addToBor(root, strs[i],i);
     return root;
 }
 
@@ -37,7 +42,7 @@ void createFails(Node* root){
     list<Node*> queue;
     for(auto p:root->v){
         p.second->failNode=root;
-        queue.push_front(p.second);
+        queue.push_back(p.second);
     }
     while(!queue.empty()){
         Node* parent=*queue.begin();
@@ -45,7 +50,7 @@ void createFails(Node* root){
         for(auto n:parent->v){
             char letter=n.first;
             Node* child=n.second;
-            queue.push_front(child);
+            queue.push_back(child);
             ////////////////////////
             Node* failNode=parent->failNode;
             while (failNode->v.find(letter)==failNode->v.end() && failNode!= root){
@@ -89,12 +94,35 @@ vector<pair<int,int>> findPatterns(string str, Node* root, vector<string>& strs)
     return res;
 };
 
+vector<pair<int,int>> ahoCorasick(string& txt, vector<string>& keys){
+    Node* bor=createBor(keys);
+    createFails(bor);
+    createSubPatterns(bor);
+    vector<pair<int,int>> res=findPatterns(txt,bor,keys);
+    Node::deleteBor(bor);
+    return res;
+};
+
 int main() {
-    vector<string> strs{"vab","better","spl","ert","tri","plus","tt","t","luspl","lu","aab","aa"};
-    Node* n=createBor(strs);
-    createFails(n);
-    createSubPatterns(n);
-    vector<pair<int,int>> res=findPatterns("myjavabetterthancplusplusplaab",n,strs);
-    for(auto p:res)cout<<p.first<<" "<<strs[p.second]<<"\n";
+    string txt;
+    vector<string> keys;
+    cin>>txt;
+    int k;
+    cin>>k;
+    for(int i=0;i<k;i++){
+        string s;
+        cin>>s;
+        keys.push_back(s);
+    }
+    vector<pair<int,int>> res=ahoCorasick(txt,keys);
+    struct Comparator{
+        bool operator()(pair<int,int> const & l,pair<int,int> const & r)const {
+            if(l.first!=r.first)return l.first<r.first;
+            return l.second<r.second;
+        }
+    };
+    set<pair<int,int>,Comparator> sorted;
+    for(auto p:res)sorted.insert(p);
+    for(auto p:sorted)cout<<p.first+1<<" "<<p.second+1<<"\n";
     return 0;
 }
