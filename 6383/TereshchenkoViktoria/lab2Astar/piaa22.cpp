@@ -61,8 +61,8 @@ public:
 			{
 				if (queue[i].priority > p.priority)
 				{
-					queue.insert(queue.begin() + i, p); //insert from push_back?
-					return; //?
+					queue.insert(queue.begin() + i, p);
+					return; 
 				}
 			}
 		}
@@ -89,7 +89,7 @@ public:
                 return;
             }
         }
-		queue.erase(queue.begin());         //?
+		queue.erase(queue.begin());         
 	}
 };
 
