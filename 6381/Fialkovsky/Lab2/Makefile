@@ -1,4 +1,11 @@
-all: main.o
-	g++ main.o -o Jadina.exe
-lab1.o: main.cpp
-	g++ -c main.cpp -o main.o
+KEYS=-Wall -Wextra
+
+all: aStar.o
+	g++ aStar.o -o aStar.exe $(KEYS)
+aStar.o: aStar.cpp
+	g++ -c aStar.cpp -o aStar.o
+
+jadina: jadina.o
+	g++ jadina.o -o Jadina.exe $(KEYS)
+jadina.o: jadina.cpp
+	g++ -c jadina.cpp -o jadina.o
