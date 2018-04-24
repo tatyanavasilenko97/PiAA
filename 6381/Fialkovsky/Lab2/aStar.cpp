@@ -35,9 +35,9 @@ struct vertex_id {
 // Элемент в списке смежности (с какой вершиной смежно)
 struct SemiEdge { 
 	vertex_id Name;
-	int length;
+	double length;
 
-	SemiEdge(vertex_id name, int length) : Name(name), length(length) {} ;
+	SemiEdge(vertex_id name, double length) : Name(name), length(length) {} ;
 
 	friend std::ostream& operator<<(std::ostream &out, SemiEdge semiEdge){
 		out << semiEdge.Name << "(" << semiEdge.length << ")";
@@ -117,7 +117,7 @@ public:
 		AdjList.emplace_back(name);
 	}
 
-	void addEdge(vertex_id start, vertex_id destination, int length){
+	void addEdge(vertex_id start, vertex_id destination, double length){
 		addVertex(start);
 		addVertex(destination);
 		for (auto &vectorElem : AdjList){
@@ -204,8 +204,9 @@ public:
 			vertex_id cur_vertex_name = WaitingList.pop();
 			if (test) std::cout << "Cur vertex_name: " << cur_vertex_name << std::endl;
 
-			if (cur_vertex_name == destination)
+			if (cur_vertex_name == destination){
 				break;	
+			}
 
 			for (auto next_vertex : (*this)[cur_vertex_name]) {
 				double newCost = next_vertex.length + getCurrentLenght(CurrentCosts, cur_vertex_name);
@@ -217,7 +218,8 @@ public:
 					setNewLength(CurrentCosts, next_vertex.Name, newCost);
 					double priority = newCost + (double)HeuristicFunction(next_vertex.Name, destination);
 					WaitingList.add(next_vertex.Name, priority);
-					MinChains.push_back(std::make_pair(cur_vertex_name, next_vertex.Name));	
+					// MinChains.push_back(std::make_pair(cur_vertex_name, next_vertex.Name)); // fix
+					changeChains(MinChains, cur_vertex_name, next_vertex.Name);
 
 					if (test) std::cout << "	newPriority: " << priority << " = " << newCost << "(newCost) + " << (double)HeuristicFunction(next_vertex.Name, destination) << std::endl << std::endl;				
 				}
@@ -231,8 +233,13 @@ public:
 		}
 
 		std::deque <vertex_id> Track;
+		// Сбойный кусок кода.
+		/*
 		if (MinChains.back().second != destination)
 			return Track; // Проверка на валидность пути. Если последняя точка не точка назначения, возвращаем пустой дек.
+		*/
+		if (!checkForValidTrack(MinChains, destination))
+			return Track;
 		vertex_id tmp = destination;
 		while (tmp != start){
 			for (auto &element : MinChains){
@@ -271,6 +278,22 @@ private:
 				return;
 			}
 		CurrentCosts.push_back(std::make_pair(vertex_name, newLenght));
+	}
+
+	bool checkForValidTrack(const Vertex_Vertex_Pairs &MinChains, vertex_id destination){
+		for (auto const &element : MinChains)
+			if (element.second == destination)
+				return true;
+		return false;
+	}
+
+	void changeChains(Vertex_Vertex_Pairs &MinChains, vertex_id from, vertex_id destination){
+		for (auto &element : MinChains)
+			if (element.second == destination){
+				element.first = from;
+				return;
+			}
+		MinChains.push_back(std::make_pair(from, destination));
 	}
 };
 
