@@ -4,12 +4,8 @@ bool cmpVerPtr(Vertex *x, Vertex *y){
     return x->getName() < y->getName();
 }
 
-bool cmpEdgeMin(Edge x, Edge y){
+bool cmpEdge(Edge x, Edge y){
     return x.getSecond()->getName() < y.getSecond()->getName();
-}
-
-bool cmpEdgeMax(Edge x, Edge y){
-    return x.getSecond()->getName() > y.getSecond()->getName();
 }
 
 struct PointerCompare {
@@ -54,7 +50,7 @@ unsigned int Graph::findMaxStream(char start_ch, char end_ch){
 void Graph::printStream(){
     std::sort(list_of_Vertexes.begin(),list_of_Vertexes.end(),cmpVerPtr);
     for(int i = 0 ; i < list_of_Vertexes.size() ; ++i){
-        std::sort(list_of_Vertexes[i]->getEdges().begin(),list_of_Vertexes[i]->getEdges().end(), cmpEdgeMin);
+        std::sort(list_of_Vertexes[i]->getEdges().begin(),list_of_Vertexes[i]->getEdges().end(), cmpEdge);
         for(int j = 0 ; j < list_of_Vertexes[i]->getEdges().size(); ++j){
             std::cout << list_of_Vertexes[i]->getName() << " " << list_of_Vertexes[i]->getEdges()[j].getSecond()->getName() << " " << list_of_Vertexes[i]->getEdges()[j].getStream() << std::endl;
         }
