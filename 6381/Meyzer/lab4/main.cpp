@@ -5,7 +5,7 @@
 
 using namespace std;
 
-vector<size_t> prefixEval(string Text)
+vector<size_t> prefixEval(const string& Text)
 {
 	vector<size_t> Result;
 	Result.push_back(0);
