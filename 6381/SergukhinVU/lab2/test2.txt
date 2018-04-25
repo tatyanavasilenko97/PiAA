@@ -1,0 +1,9 @@
+a e
+a n 2
+a m 1
+n i 1
+n m 5
+i e 5
+i m 1
+m i 10
+m e 3
