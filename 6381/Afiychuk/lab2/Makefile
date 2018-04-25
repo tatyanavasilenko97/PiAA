@@ -1,9 +1,9 @@
-all: greedy a_star
+all: greedy A
 
 greedy: greedy.o
 	g++ greedy.o -o greedy -std=c++11
-a_star: A.o
-	g++ lab2_2.o -o a_star -std=c++11
+A: A.o
+	g++ lab2_2.o -o A -std=c++11
 greedy.o: greedy.cpp
 	g++ -c greedy.cpp -std=c++11
 A.o: A.cpp
