@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include <stdexcept>
 #define DEBUG
 #define OUT_INP
@@ -33,8 +34,8 @@ namespace DM
 		{
 			vector<int> next; // Keeps edges to each symbol
 				// -1 if there is no edge to symbol with index
-			unsigned parent; // Parent addr
-			char parentChar; // Symbol in edge between parent and current node
+			unsigned parent = 0; // Parent addr
+			char parentChar = 0; // Symbol in edge between parent and current node
 			int pattNum = -1; // = -1 if resulting string is not a pattern
 			int ref = 0; // = 0 by default
 			Node()
@@ -43,7 +44,7 @@ namespace DM
 			}
 		};
 
-		Trie(const vector<string>& patterns, char joker = 0)
+		Trie(const vector<string>& patterns, char joker = -1)
 		{
 			buildTrie(patterns, joker);
 		}
@@ -100,6 +101,7 @@ namespace DM
 				#endif
 				addPattern(patterns[i], i+1, joker);
 			}
+			calcReferences();
 		}
 		void addPattern(const string &pattern, unsigned pattN, char joker)
 		{
@@ -114,14 +116,12 @@ namespace DM
 				}
 				// If we already have edge with this symbol
 					// Then we just move to it
-				// else if (tmp.next[to_uns(i)] != -1)
 				else if (nodes[current].next[to_uns(i)] != -1)
 				{
 					#ifdef DEBUG
 						cout << "   Edge with " << i
 							<< " character is already exists. Moving to it." << endl;
 					#endif
-					// tmp = nodes[tmp.next[to_uns(i)]];
 					current = nodes[current].next[to_uns(i)];
 				}
 				// Else we are adding new edge, creating vertex and reference
@@ -134,20 +134,14 @@ namespace DM
 					nodes.back().parentChar = i;
 					// Setting edge to the new node from the current
 					nodes[current].next[to_uns(i)] = nodes.size() - 1;
-					// Setting reference in the new node:
-					// Moving on reference in parent node and looking for edge with i symbol
-					// If found, sets a reference to the node after this edge
-					// Else sets a reference to the root(which set on it by default)
-					if (nodes[nodes[current].ref].next[to_uns(i)] != -1
-						&& nodes[nodes[current].ref].next[to_uns(i)] != nodes.size()-1)
-						nodes.back().ref = nodes[nodes[current].ref].next[to_uns(i)];
+
 					#ifdef DEBUG
 						cout << "   There is no edge with " << i
 							<< " character. Creating it and new node." << endl
 							<< "      Number of the new node is      "
 							<< nodes.size() - 1 << endl
-							<< "      It has a reference to the node "
-							<< nodes.back().ref << endl;
+							<< "      It's parent is                 "
+							<< nodes.back().parent << endl;
 					#endif
 					// Moving to the created node
 					current = nodes.size() - 1;
@@ -157,8 +151,39 @@ namespace DM
 				cout << "   Added pattern " << pattern << " with number "
 					<< pattN << endl;
 			#endif
-			// tmp.pattNum = pattN;
 			nodes[current].pattNum = pattN;
+		}
+		void calcReferences()
+		{
+			#ifdef DEBUG
+				cout << endl << "Calculating references:" << endl;
+			#endif
+			list<unsigned> queue;
+			queue.push_back(0);
+			while(!queue.empty())
+			{
+				unsigned current = queue.front();
+				queue.pop_front();
+				for(int i : nodes[current].next)
+				{
+					if (i != -1)
+						queue.push_back(i);
+				}
+				if (nodes[current].parent == 0)
+					continue;
+				// Setting reference in the new node:
+				// Moving on reference in parent node and looking for edge with i symbol
+				// If found, sets a reference to the node after this edge
+				// Else sets a reference to the root(which set on it by default)
+				unsigned parRef = nodes[nodes[current].parent].ref;
+				char parChar = nodes[current].parentChar;
+				if (nodes[parRef].next[to_uns(parChar)] != -1)
+					nodes[current].ref = nodes[parRef].next[to_uns(parChar)];
+				#ifdef DEBUG
+					cout << "   Reference in node " << current << " is set to "
+						<< nodes[current].ref << endl;
+				#endif
+			}
 		}
 		void _print(const Node &arg, string str) const
 		{
@@ -194,7 +219,6 @@ int main()
 	vector<string> patterns;
 	readData(text, pattN, patterns);
 	DM::Trie trie{patterns};
-	trie.print();
 	trie.searchSubStrings(text);
 	return 0;
 }
