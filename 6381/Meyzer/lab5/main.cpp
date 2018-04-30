@@ -40,9 +40,22 @@ namespace DM
 				next = vector<int>(alphabet.size(), -1);
 			}
 		};
+
 		Trie(const vector<string>& patterns, char joker = 0)
 		{
 			buildTrie(patterns, joker);
+		}
+
+		bool hasString(const string &arg)
+		{
+			unsigned current = 0;
+			for (char i : arg)
+			{
+				if (nodes[current].next[to_uns(i)] != -1)
+					current = nodes[current].next[to_uns(i)];
+				else return false;
+			}
+			return (nodes[current].pat_num != -1);
 		}
 
 		void print() const
