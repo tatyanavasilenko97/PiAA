@@ -3,8 +3,8 @@
 #include <vector>
 #include <list>
 #include <stdexcept>
-#define DEBUG
-#define OUT_INP
+// #define DEBUG
+// #define OUT_INP
 
 using namespace std;
 
@@ -26,6 +26,13 @@ namespace DM
 		}
 		throw out_of_range(string("There is no symbol ") + a + " in alphabet");
 	}
+
+	struct uuStruct
+	{
+		unsigned a;
+		unsigned b;
+	};
+
 
 	class Trie
 	{
@@ -61,16 +68,25 @@ namespace DM
 			return (nodes[current].pattNum != -1);
 		}
 
-		void searchSubStrings(string text)
+		void searchSubStrings(const string& text, list<uuStruct>& result)
 		{
 			unsigned current = 0;
+			// For each character
 			for (unsigned i = 0, size = text.size(); i < size; ++i)
 			{
 				char c = text[i];
-				if (nodes[current].next[to_uns(c)] != -1)
-					current = nodes[current].next[to_uns(c)];
-				else
+				// While there is no edge with such char we are going to other node by ref until its root
+				while ((nodes[current].next[to_uns(c)] == -1) && current != 0)
+				{
 					current = nodes[current].ref;
+				}
+				if (nodes[current].next[to_uns(c)] != -1)
+				{
+					current = nodes[current].next[to_uns(c)];
+				}
+				else
+					continue;
+
 				// For current node and all its references
 				// If it's one of the patterns then add it to result
 				unsigned tmp = current;
@@ -78,7 +94,8 @@ namespace DM
 				{
 					// cout << tmp;
 					if (nodes[tmp].pattNum != -1)
-						cout << i << " " << nodes[tmp].pattNum << endl;
+						result.push_back({i+2-pattSizes[nodes[tmp].pattNum-1],
+							static_cast<unsigned>(nodes[tmp].pattNum)});
 					tmp = nodes[tmp].ref;
 				}
 			}
@@ -91,6 +108,7 @@ namespace DM
 		}
 	private:
 		vector<Node> nodes;
+		vector<int> pattSizes;
 		void buildTrie(const vector<string>& patterns, char joker)
 		{
 			nodes.push_back(Node{});
@@ -152,6 +170,7 @@ namespace DM
 					<< pattN << endl;
 			#endif
 			nodes[current].pattNum = pattN;
+			pattSizes.push_back(pattern.size());
 		}
 		void calcReferences()
 		{
@@ -215,10 +234,21 @@ void readData(string &text, unsigned& pattN, vector<string> &patterns)
 int main()
 {
 	string text;
+	list<DM::uuStruct> result;
 	unsigned pattN = 0;
 	vector<string> patterns;
 	readData(text, pattN, patterns);
 	DM::Trie trie{patterns};
-	trie.searchSubStrings(text);
+	trie.searchSubStrings(text, result);
+	result.sort([](const DM::uuStruct &lhs, const DM::uuStruct &rhs)
+		{
+			return lhs.b<rhs.b;
+		});
+	result.sort([](const DM::uuStruct &lhs, const DM::uuStruct &rhs)
+		{
+			return lhs.a<rhs.a;
+		});
+	for (auto &i : result)
+		cout << i.a << " " << i.b << endl;
 	return 0;
 }
