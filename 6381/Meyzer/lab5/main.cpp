@@ -33,8 +33,10 @@ namespace DM
 		{
 			vector<int> next; // Keeps edges to each symbol
 				// -1 if there is no edge to symbol with index
-			int pat_num = -1; // = -1 if resulting string is not a pattern
-			int suff_link = -1; // = -1 if no suffix link
+			unsigned parent; // Parent addr
+			char parentChar; // Symbol in edge between parent and current node
+			int pattNum = -1; // = -1 if resulting string is not a pattern
+			int ref = 0; // = 0 by default
 			Node()
 			{
 				next = vector<int>(alphabet.size(), -1);
@@ -55,9 +57,33 @@ namespace DM
 					current = nodes[current].next[to_uns(i)];
 				else return false;
 			}
-			return (nodes[current].pat_num != -1);
+			return (nodes[current].pattNum != -1);
 		}
 
+		void searchSubStrings(string text)
+		{
+			unsigned current = 0;
+			for (unsigned i = 0, size = text.size(); i < size; ++i)
+			{
+				char c = text[i];
+				if (nodes[current].next[to_uns(c)] != -1)
+					current = nodes[current].next[to_uns(c)];
+				else
+					current = nodes[current].ref;
+				// For current node and all its references
+				// If it's one of the patterns then add it to result
+				unsigned tmp = current;
+				while (tmp != 0)
+				{
+					// cout << tmp;
+					if (nodes[tmp].pattNum != -1)
+						cout << i << " " << nodes[tmp].pattNum << endl;
+					tmp = nodes[tmp].ref;
+				}
+			}
+		}
+
+		// Prints all the patterns that trie keeps
 		void print() const
 		{
 			_print(nodes[0], "");
@@ -98,17 +124,32 @@ namespace DM
 					// tmp = nodes[tmp.next[to_uns(i)]];
 					current = nodes[current].next[to_uns(i)];
 				}
-				// Else we are adding new edge and creating vertex
+				// Else we are adding new edge, creating vertex and reference
 				else
 				{
+					// Creating empty node
+					nodes.push_back(Node{});
+					// Setting parent node in new node
+					nodes.back().parent = current;
+					nodes.back().parentChar = i;
+					// Setting edge to the new node from the current
+					nodes[current].next[to_uns(i)] = nodes.size() - 1;
+					// Setting reference in the new node:
+					// Moving on reference in parent node and looking for edge with i symbol
+					// If found, sets a reference to the node after this edge
+					// Else sets a reference to the root(which set on it by default)
+					if (nodes[nodes[current].ref].next[to_uns(i)] != -1
+						&& nodes[nodes[current].ref].next[to_uns(i)] != nodes.size()-1)
+						nodes.back().ref = nodes[nodes[current].ref].next[to_uns(i)];
 					#ifdef DEBUG
 						cout << "   There is no edge with " << i
-							<< " character. Creating it." << endl;
+							<< " character. Creating it and new node." << endl
+							<< "      Number of the new node is      "
+							<< nodes.size() - 1 << endl
+							<< "      It has a reference to the node "
+							<< nodes.back().ref << endl;
 					#endif
-					nodes.push_back(Node{});
-					// tmp.next[to_uns(i)] = nodes.size()-1;
-					nodes[current].next[to_uns(i)] = nodes.size() - 1;
-					// tmp = nodes.back();
+					// Moving to the created node
 					current = nodes.size() - 1;
 				}
 			}
@@ -116,16 +157,16 @@ namespace DM
 				cout << "   Added pattern " << pattern << " with number "
 					<< pattN << endl;
 			#endif
-			// tmp.pat_num = pattN;
-			nodes[current].pat_num = pattN;
+			// tmp.pattNum = pattN;
+			nodes[current].pattNum = pattN;
 		}
 		void _print(const Node &arg, string str) const
 		{
 			for (unsigned i = 0, size = alphabet.size(); i < size; ++i)
 				if (arg.next[i] != -1)
 					_print(nodes[arg.next[i]], str+to_char(i));
-			if (arg.pat_num != -1)
-				cout << arg.pat_num << " " << str << endl;
+			if (arg.pattNum != -1)
+				cout << arg.pattNum << " " << str << endl;
 		}
 	};
 };
@@ -154,5 +195,6 @@ int main()
 	readData(text, pattN, patterns);
 	DM::Trie trie{patterns};
 	trie.print();
+	trie.searchSubStrings(text);
 	return 0;
 }
