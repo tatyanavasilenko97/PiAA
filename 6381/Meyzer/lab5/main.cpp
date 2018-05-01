@@ -3,8 +3,8 @@
 #include <vector>
 #include <list>
 #include <stdexcept>
-#define DEBUG
-#define OUT_INP
+// #define DEBUG
+// #define OUT_INP
 
 using namespace std;
 
@@ -43,7 +43,7 @@ namespace DM
 				// -1 if there is no edge to symbol with index
 			unsigned parent = 0; // Parent addr
 			char parentChar = 0; // Symbol in edge between parent and current node
-			int pattNum = -1; // = -1 if resulting string is not a pattern
+			std::list<unsigned> pattNum;
 			int ref = 0; // = 0 by default
 			Node()
 			{
@@ -65,7 +65,7 @@ namespace DM
 					current = nodes[current].next[to_uns(i)];
 				else return false;
 			}
-			return (nodes[current].pattNum != -1);
+			return (!nodes[current].pattNum.empty());
 		}
 
 		void searchSubStrings(const string& text, list<uuStruct>& result)
@@ -97,9 +97,10 @@ namespace DM
 				while (tmp != 0)
 				{
 					// cout << tmp;
-					if (nodes[tmp].pattNum != -1)
-						result.push_back({i+2-pattSizes[nodes[tmp].pattNum-1],
-							static_cast<unsigned>(nodes[tmp].pattNum)});
+					if (!nodes[tmp].pattNum.empty())
+						for (auto j : nodes[tmp].pattNum)
+							result.push_back({i+2-pattSizes[j-1],
+								static_cast<unsigned>(j)});
 					tmp = nodes[tmp].ref;
 				}
 				#ifdef DEBUG
@@ -137,14 +138,9 @@ namespace DM
 			unsigned current = 0;
 			for (char i : pattern)
 			{
-				// If character is a joker then we are adding all the edges to this node
-				if (i == joker)
-				{
-					//TODO
-				}
 				// If we already have edge with this symbol
 					// Then we just move to it
-				else if (nodes[current].next[to_uns(i)] != -1)
+				if (nodes[current].next[to_uns(i)] != -1)
 				{
 					#ifdef DEBUG
 						cout << "   Edge with " << i
@@ -175,21 +171,21 @@ namespace DM
 					current = nodes.size() - 1;
 				}
 			}
-			if (nodes[current].pattNum == -1)
-			{
-				#ifdef DEBUG
-					cout << "   Added pattern " << pattern << " with number "
-						<< pattN << endl;
-				#endif
-				nodes[current].pattNum = pattN;
-				pattSizes.push_back(pattern.size());
-			}
-			else
-			{
-				#ifdef DEBUG
-					cout << "   Trie already has this pattern." << endl;
-				#endif
-			}
+			// if (nodes[current].pattNum == -1)
+			// {
+			#ifdef DEBUG
+				cout << "   Added pattern " << pattern << " with number "
+					<< pattN << endl;
+			#endif
+			nodes[current].pattNum.push_back(pattN);
+			pattSizes.push_back(pattern.size());
+			// }
+			// else
+			// {
+			// 	#ifdef DEBUG
+			// 		cout << "   Trie already has this pattern." << endl;
+			// 	#endif
+			// }
 		}
 		void calcReferences()
 		{
@@ -234,8 +230,13 @@ namespace DM
 			for (unsigned i = 0, size = alphabet.size(); i < size; ++i)
 				if (arg.next[i] != -1)
 					_print(nodes[arg.next[i]], str+to_char(i));
-			if (arg.pattNum != -1)
-				cout << arg.pattNum << " " << str << endl;
+			if (!arg.pattNum.empty())
+			{
+				cout << str << " ";
+				for (auto i : arg.pattNum)
+					cout << i << " ";
+				cout << endl;
+			}
 		}
 	};
 };
@@ -276,7 +277,6 @@ void splitInPatterns(const string &text, const char sep,
 		{
 			++rhs; // = $ after A, -
 		}
-		cout << "Pushing back " << string(lhs, rhs) << endl;
 		patterns.push_back({lhs, rhs});
 		pattBeg.push_back(lhs-text.begin()+1);
 		++pattN;
@@ -335,7 +335,6 @@ int main()
 			#endif
 		for (auto &i : result)
 		{
-			cout << i.a << " " << i.b << endl;
 			// Beginning of current subpattern in pattern starting from 0
 			unsigned subPattBeg = pattBeg[i.b-1]-1;
 			// if it's bigger than beginning of a pattern
