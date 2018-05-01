@@ -3,8 +3,8 @@
 #include <vector>
 #include <list>
 #include <stdexcept>
-// #define DEBUG
-// #define OUT_INP
+#define DEBUG
+#define OUT_INP
 
 using namespace std;
 
@@ -175,12 +175,21 @@ namespace DM
 					current = nodes.size() - 1;
 				}
 			}
-			#ifdef DEBUG
-				cout << "   Added pattern " << pattern << " with number "
-					<< pattN << endl;
-			#endif
-			nodes[current].pattNum = pattN;
-			pattSizes.push_back(pattern.size());
+			if (nodes[current].pattNum == -1)
+			{
+				#ifdef DEBUG
+					cout << "   Added pattern " << pattern << " with number "
+						<< pattN << endl;
+				#endif
+				nodes[current].pattNum.push_back(pattN);
+				pattSizes.push_back(pattern.size());
+			}
+			else
+			{
+				#ifdef DEBUG
+					cout << "   Trie already has this pattern." << endl;
+				#endif
+			}
 		}
 		void calcReferences()
 		{
@@ -247,13 +256,60 @@ void readData(string &text, unsigned& pattN, vector<string> &patterns)
 	#endif
 }
 
+void splitInPatterns(const string &text, const char sep,
+	vector<string> &patterns, vector<unsigned> &pattBeg, unsigned &pattN)
+{
+	auto lhs = text.begin();
+	auto rhs = text.begin();
+	while (rhs != text.end())
+	{
+		// $$$A$$$B$$$,
+		// A$A
+		while ((*lhs) == sep)
+		{
+			++lhs; // = A, $
+		}
+		if (lhs == text.end())
+			break;
+		rhs = lhs;
+		while ((*rhs) != sep && rhs != text.end())
+		{
+			++rhs; // = $ after A, -
+		}
+		cout << "Pushing back " << string(lhs, rhs) << endl;
+		patterns.push_back({lhs, rhs});
+		pattBeg.push_back(lhs-text.begin()+1);
+		++pattN;
+		if (rhs == text.end())
+			break;
+		++rhs;
+		lhs = rhs;
+	}
+}
+
 int main()
 {
 	string text;
 	list<DM::uuStruct> result;
 	unsigned pattN = 0;
+	char joker;
 	vector<string> patterns;
-	readData(text, pattN, patterns);
+	// Step1
+		// readData(text, pattN, patterns);
+	// Step2
+	 	string pattern;
+		vector<unsigned> pattBeg;
+		cin >> text;
+		cin >> pattern;
+		cin >> joker;
+		splitInPatterns(pattern, joker, patterns, pattBeg, pattN);
+		#ifdef DEBUG
+		cout << "Splitted in patterns: " << endl;
+		for (unsigned i = 0, size = patterns.size(); i < size; ++i)
+			cout << patterns[i] << " " << pattBeg[i] << endl;
+		#endif
+
+
 	DM::Trie trie{patterns};
 	trie.searchSubStrings(text, result);
 	result.sort([](const DM::uuStruct &lhs, const DM::uuStruct &rhs)
@@ -264,7 +320,45 @@ int main()
 		{
 			return lhs.a<rhs.a;
 		});
-	for (auto &i : result)
-		cout << i.a << " " << i.b << endl;
+
+	// Answer output:
+	// Step1 First is position, second is pattern number both starting from 1
+		// for (auto &i : result)
+		// 	cout << i.a << " " << i.b << endl;
+	// Step2
+		// tmp[i] keeps number of subpatterns that match
+		// the pattern with beginning in i of text
+		vector<unsigned> tmp(text.size(), 0);
+		#ifdef DEBUG
+			cout << "Printing answer:" << endl
+				<< "   Text size - " << text.size() << endl;
+			#endif
+		for (auto &i : result)
+		{
+			cout << i.a << " " << i.b << endl;
+			// Beginning of current subpattern in pattern starting from 0
+			unsigned subPattBeg = pattBeg[i.b-1]-1;
+			// if it's bigger than beginning of a pattern
+			// then it exceeds start of the text
+			if (subPattBeg > (i.a-1))
+				continue;
+			// Beginning of a pattern in text starting from 0
+			unsigned pattBeg = i.a-1-subPattBeg;
+			// if pattern exceeds end of the text
+			if (pattBeg+pattern.size()>text.size())
+				continue;
+			++tmp[pattBeg];
+			// If in this point number of subpatterns is max
+			// then it's beginning of a pattern
+			#ifdef DEBUG
+				cout << "   Subbpattern pos   - " << i.a << endl
+					  << "          , number   - " << i.b << endl;
+				cout << "   Pattern beginning - " << pattBeg << endl
+					  << "              , size - " << pattern.size() << endl;
+			#endif
+			if ((tmp[pattBeg] == pattN))
+				cout << pattBeg+1 << endl;
+		}
+
 	return 0;
 }
