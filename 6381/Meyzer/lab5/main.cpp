@@ -40,7 +40,7 @@ namespace DM
 		struct Node
 		{
 			vector<int> next; // Keeps edges to each symbol
-				// -1 if there is no edge to symbol with index
+				// -1 if there is no edge to symbol with such index
 			unsigned parent = 0; // Parent addr
 			char parentChar = 0; // Symbol in edge between parent and current node
 			std::list<unsigned> pattNum;
@@ -51,21 +51,9 @@ namespace DM
 			}
 		};
 
-		Trie(const vector<string>& patterns, char joker = -1)
+		Trie(const vector<string>& patterns)
 		{
-			buildTrie(patterns, joker);
-		}
-
-		bool hasString(const string &arg)
-		{
-			unsigned current = 0;
-			for (char i : arg)
-			{
-				if (nodes[current].next[to_uns(i)] != -1)
-					current = nodes[current].next[to_uns(i)];
-				else return false;
-			}
-			return (!nodes[current].pattNum.empty());
+			buildTrie(patterns);
 		}
 
 		void searchSubStrings(const string& text, list<uuStruct>& result)
@@ -120,7 +108,7 @@ namespace DM
 	private:
 		vector<Node> nodes;
 		vector<int> pattSizes;
-		void buildTrie(const vector<string>& patterns, char joker)
+		void buildTrie(const vector<string>& patterns)
 		{
 			nodes.push_back(Node{});
 			for (unsigned i = 0, size = patterns.size(); i < size; ++i)
@@ -128,11 +116,11 @@ namespace DM
 				#ifdef DEBUG
 					cout << "Adding to trie pattern " << patterns[i] << endl;
 				#endif
-				addPattern(patterns[i], i+1, joker);
+				addPattern(patterns[i], i+1);
 			}
 			calcReferences();
 		}
-		void addPattern(const string &pattern, unsigned pattN, char joker)
+		void addPattern(const string &pattern, unsigned pattN)
 		{
 			// Node &tmp = nodes[0];
 			unsigned current = 0;
@@ -264,18 +252,16 @@ void splitInPatterns(const string &text, const char sep,
 	auto rhs = text.begin();
 	while (rhs != text.end())
 	{
-		// $$$A$$$B$$$,
-		// A$A
 		while ((*lhs) == sep)
 		{
-			++lhs; // = A, $
+			++lhs;
 		}
 		if (lhs == text.end())
 			break;
 		rhs = lhs;
 		while ((*rhs) != sep && rhs != text.end())
 		{
-			++rhs; // = $ after A, -
+			++rhs;
 		}
 		patterns.push_back({lhs, rhs});
 		pattBeg.push_back(lhs-text.begin()+1);
@@ -302,6 +288,9 @@ int main()
 		cin >> text;
 		cin >> pattern;
 		cin >> joker;
+		#ifdef OUT_INP
+			cout << text << '\n' << pattern << '\n' << joker << endl;
+		#endif
 		splitInPatterns(pattern, joker, patterns, pattBeg, pattN);
 		#ifdef DEBUG
 		cout << "Splitted in patterns: " << endl;
@@ -350,8 +339,8 @@ int main()
 			// If in this point number of subpatterns is max
 			// then it's beginning of a pattern
 			#ifdef DEBUG
-				cout << "   Subbpattern pos   - " << i.a << endl
-					  << "          , number   - " << i.b << endl;
+				cout << "   Subpattern pos    - " << i.a << endl
+					  << "         , number    - " << i.b << endl;
 				cout << "   Pattern beginning - " << pattBeg << endl
 					  << "              , size - " << pattern.size() << endl;
 			#endif
