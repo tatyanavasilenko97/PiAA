@@ -181,7 +181,7 @@ namespace DM
 					cout << "   Added pattern " << pattern << " with number "
 						<< pattN << endl;
 				#endif
-				nodes[current].pattNum.push_back(pattN);
+				nodes[current].pattNum = pattN;
 				pattSizes.push_back(pattern.size());
 			}
 			else
