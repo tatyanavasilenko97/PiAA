@@ -70,6 +70,10 @@ namespace DM
 
 		void searchSubStrings(const string& text, list<uuStruct>& result)
 		{
+			#ifdef DEBUG
+				cout << "Searching sub strings:" << endl
+					<< "  Processing nodes:" << endl << "  ";
+			#endif
 			unsigned current = 0;
 			// For each character
 			for (unsigned i = 0, size = text.size(); i < size; ++i)
@@ -98,7 +102,13 @@ namespace DM
 							static_cast<unsigned>(nodes[tmp].pattNum)});
 					tmp = nodes[tmp].ref;
 				}
+				#ifdef DEBUG
+					cout << current << " ";
+				#endif
 			}
+			#ifdef DEBUG
+				cout << endl;
+			#endif
 		}
 
 		// Prints all the patterns that trie keeps
@@ -191,16 +201,22 @@ namespace DM
 				if (nodes[current].parent == 0)
 					continue;
 				// Setting reference in the new node:
-				// Moving on reference in parent node and looking for edge with i symbol
-				// If found, sets a reference to the node after this edge
-				// Else sets a reference to the root(which set on it by default)
+				// Moves on a references until reaching root or having edge with needed symbol
 				unsigned parRef = nodes[nodes[current].parent].ref;
 				char parChar = nodes[current].parentChar;
+				while (nodes[parRef].next[to_uns(parChar)] == -1
+					&& parRef != 0)
+				{
+						parRef = nodes[parRef].ref;
+				}
+				// If edge is found, sets a reference to the node with this edge
 				if (nodes[parRef].next[to_uns(parChar)] != -1)
 					nodes[current].ref = nodes[parRef].next[to_uns(parChar)];
 				#ifdef DEBUG
 					cout << "   Reference in node " << current << " is set to "
 						<< nodes[current].ref << endl;
+					cout << "   It's parent char: " << parChar << endl;
+					cout << "   It's parent ref: " << parRef << endl;
 				#endif
 			}
 		}
