@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstring>
+
+bool test = false; //  переменная тестирования 
+// Глобальные переменные  - зло!
 
 void getPrefix(std::vector <int> &ans,  std::string const &str);
 
@@ -9,7 +13,9 @@ void printAns(int ans){
 	exit(0);
 }
 
-int main() {
+int main(int argc, char** argv) {
+	if (argc == 2 && !strcmp(argv[1], "-test\0"))
+		test = true;
 	std::string strA;
 	std::string strB;
 	std::vector <int> PrefixValue;
@@ -37,7 +43,7 @@ int main() {
 }
 
 void getPrefix(std::vector <int> &ans,  std::string const &str){
-	ans.reserve(str.length());	            
+	ans.resize(str.length());	            
 	ans[0] = 0;
     int k = 0;	
 	for (size_t i = 1; i < str.length(); i++){	
